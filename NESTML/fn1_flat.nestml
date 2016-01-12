@@ -1,0 +1,41 @@
+# NESTML file for Component: fn1_flat
+#
+#    PLEASE NOTE: This export is not yet complete
+#
+package codegeneration.fn1_flat_module:
+
+neuron fn1_flat:
+
+    state:
+        V real
+        W real
+    end
+
+    parameter:
+        I real = 0.8
+        SEC real = 1.0
+    end
+
+    input:
+        spikeBuffer <- spike  
+        currentBuffer <- current
+    end
+
+    output: spike
+
+    dynamics timestep(t ms):
+
+        ODE:
+            d/dt V := ((((V - ((V ^ 3.0) / 3.0)) - W) + I) / SEC)
+            d/dt W := ((0.08 * (V + (0.7 - (0.8 * W)))) / SEC)
+        end
+
+    end
+
+end
+
+
+
+
+
+
