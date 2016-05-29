@@ -1,0 +1,175 @@
+<!-- Generated on 29.05.2016 10:11:02 from  NESTML-model "iaf_psc_alpha_nestml".-->
+
+<Lems>
+
+<Dimension symbol="current" i="1"/>
+<Dimension symbol="capacitance" m="-1" l="-2" t="4" i="2"/>
+<Dimension symbol="time" t="1"/>
+<Dimension symbol="voltage" m="1" l="2" t="-3" i="-1"/>
+<Unit symbol="pA" dimension="current" power="-12"/>
+<Unit symbol="pF" dimension="capacitance" power="-12"/>
+<Unit symbol="ms" dimension="time" power="-3"/>
+<Unit symbol="mV" dimension="voltage" power="-3"/>
+
+    <ComponentType name="iaf_psc_alpha_nestml">
+
+        <Constant name="C_m" dimension="capacitance" value="250pF"/>
+        <Constant name="Tau" dimension="time" value="10ms"/>
+        <Constant name="tau_syn_in" dimension="time" value="2ms"/>
+        <Constant name="tau_syn_ex" dimension="time" value="2ms"/>
+        <Constant name="t_ref" dimension="time" value="2ms"/>
+        <Constant name="E_L" dimension="voltage" value="-70mV"/>
+        <Constant name="I_e" dimension="current" value="0pA"/>
+        <Constant name="RefractoryCounts" dimension="none" value="5"/>
+
+        <DerivedParameter name="V_reset" dimension="voltage" value="-70-E_L"/>
+        <DerivedParameter name="Theta" dimension="voltage" value="-55-E_L"/>
+
+        <EventPort name="ex_spikes" direction="in"/>
+        <EventPort name="in_spikes" direction="in"/>
+        <EventPort name="currents" direction="in"/>
+        <EventPort name="spike" direction="out"/>
+
+        <Dynamics>
+              <StateVariable name="V" dimension="voltage"/>
+              <StateVariable name="r" dimension="none"/>
+              <DerivedVariable name="V_m" dimension="voltage" value="V+E_L"/>
+              <DerivedVariable name="G_in" dimension="none" value="(exp(1)/tau_syn_in)*t*exp(-1/tau_syn_in*t)"/>
+              <DerivedVariable name="G_ex" dimension="none" value="(exp(1)/tau_syn_ex)*t*exp(-1/tau_syn_ex*t)"/>
+
+              <OnStart>
+                <StateAssignment variable="V" value="12"/>
+                <StateAssignment variable="r" value="0"/>
+              </OnStart>
+               
+              <!--Executor generated from org.nest.lems.executor.onSpikeExecutor-->
+              <Regime name="idle" initial="true">
+                <OnEvent port="ex_spikes">
+                   <Transition regime="CompoundBlock3"/>
+                </OnEvent>
+                <OnEvent port="in_spikes">
+                   <Transition regime="CompoundBlock3"/>
+                </OnEvent>
+                <OnEvent port="currents">
+                   <Transition regime="CompoundBlock3"/>
+                </OnEvent>
+              </Regime>
+
+              <!--Generated from source lines <44,1> to <48,4>-->
+              <!--Control structure regime:-->
+              <!--if r==0:-->
+              <!--  integrate(V)-->
+              <!--else:-->
+              <!--  r = r-1-->
+              <Regime name="CompoundBlock3" initial="false">
+                <OnCondition test="r.eq.0">
+                  <Transition regime="InnerBlock4"/>
+                </OnCondition>
+                <OnCondition test="1.eq.1">
+                  <Transition regime="InnerBlock5"/>
+                </OnCondition>
+              </Regime>
+
+              <!--Generated from source lines <46,6> to <47,12>-->
+              <!--Control structure regime. -->
+              <Regime name="InnerBlock5" initial="false">
+                <OnCondition test="1.eq.1">
+                  <Transition regime="SimpleBlock5"/>
+                </OnCondition>
+              </Regime>
+
+              <!--Generated from source lines <47,2> to <47,11>-->
+              <!--Directives regime:-->
+              <!--r = r-1-->
+              <Regime name="SimpleBlock5" initial="false">
+                <OnEntry>
+                  <StateAssignment variable="r" value="r-1"/>
+                </OnEntry>
+                <OnCondition test="1.eq.1">
+                  <Transition regime="CompoundBlock1"/>
+                </OnCondition>
+              </Regime>
+
+              <!--Generated from source lines <45,2> to <45,15>-->
+              <!--Control structure regime. -->
+              <Regime name="InnerBlock4" initial="false">
+                <OnCondition test="1.eq.1">
+                  <Transition regime="SimpleBlock4"/>
+                </OnCondition>
+              </Regime>
+
+              <!--Generated from source lines <45,2> to <45,14>-->
+              <!--Directives regime:-->
+              <!--integrate(V)-->
+              <Regime name="SimpleBlock4" initial="false">
+                <TimeDerivative variable="V" value="-1/Tau*V+1/C_m*(G_in-G_ex)"/>
+                <OnCondition test="1.eq.1">
+                  <Transition regime="CompoundBlock1"/>
+                </OnCondition>
+              </Regime>
+
+              <!--Generated from source lines <49,1> to <53,4>-->
+              <!--Control structure regime:-->
+              <!--if V>=Theta:-->
+              <!--  r = RefractoryCounts-->
+              <!--  V = V_reset-->
+              <!--  emitSpike()-->
+              <Regime name="CompoundBlock1" initial="false">
+                <OnCondition test="V.geq.Theta">
+                  <Transition regime="InnerBlock2"/>
+                </OnCondition>
+                <OnCondition test="1.eq.1">
+                  <Transition regime="idle"/>
+                </OnCondition>
+              </Regime>
+
+              <!--Generated from source lines <49,13> to <52,14>-->
+              <!--Control structure regime. -->
+              <Regime name="InnerBlock2" initial="false">
+                <OnCondition test="1.eq.1">
+                  <Transition regime="SimpleBlock3"/>
+                </OnCondition>
+              </Regime>
+
+              <!--Generated from source lines <50,2> to <50,22>-->
+              <!--Directives regime:-->
+              <!--r = RefractoryCounts-->
+              <Regime name="SimpleBlock3" initial="false">
+                <OnEntry>
+                  <StateAssignment variable="r" value="RefractoryCounts"/>
+                </OnEntry>
+                <OnCondition test="1.eq.1">
+                  <Transition regime="SimpleBlock2"/>
+                </OnCondition>
+              </Regime>
+
+              <!--Generated from source lines <51,2> to <51,13>-->
+              <!--Directives regime:-->
+              <!--V = V_reset-->
+              <Regime name="SimpleBlock2" initial="false">
+                <OnEntry>
+                  <StateAssignment variable="V" value="V_reset"/>
+                </OnEntry>
+                <OnCondition test="1.eq.1">
+                  <Transition regime="SimpleBlock1"/>
+                </OnCondition>
+              </Regime>
+
+              <!--Generated from source lines <52,2> to <52,13>-->
+              <!--Directives regime:-->
+              <!--emitSpike()-->
+              <Regime name="SimpleBlock1" initial="false">
+                  <OnEntry>
+                  <EventOut port="spike"/>
+                  </OnEntry>
+                <OnCondition test="1.eq.1">
+                  <Transition regime="idle"/>
+                </OnCondition>
+              </Regime>
+
+        </Dynamics>
+    </ComponentType>
+
+    <Component id="iaf_psc_alpha_nestml_instance" type="iaf_psc_alpha_nestml"/>
+
+</Lems>
