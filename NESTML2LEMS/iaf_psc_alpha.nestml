@@ -1,7 +1,7 @@
 neuron iaf_psc_alpha_nestml:
 
   state:
-    V mV = 12 #a defaul value  
+    V mV
     G_in, G_ex real
     alias V_m mV = V + E_L # Membrane potential.
   end
@@ -10,8 +10,7 @@ neuron iaf_psc_alpha_nestml:
       G_in = (e/tau_syn_in) * t * exp(-1/tau_syn_in*t)
       G_ex = (e/tau_syn_ex) * t * exp(-1/tau_syn_ex*t)
 
-      #V' = -1/Tau * V + 1/C_m * (I_sum(G_in, in_spikes) + I_sum(G_ex, ex_spikes) + I_e + currents)
-	  V' = -1/Tau * V + 1/C_m * (G_in-G_ex)
+      V' = -1/Tau * V + 1/C_m * (I_sum(G_in, in_spikes) + I_sum(G_ex, ex_spikes) + I_e + currents)
   end
 
   parameter:
@@ -21,15 +20,14 @@ neuron iaf_psc_alpha_nestml:
     tau_syn_ex ms = 2     # Time constant of synaptic current.
     t_ref   ms = 2     # Refractory period.
     E_L     mV = -70  # Resting potential.
-    alias V_reset mV = -70 - E_L
-    alias Theta   mV = -55 - E_L
+    alias V_reset mV = -70mV - E_L
+    alias Theta   mV = -55mV - E_L
     I_e     pA = 0     # External current.
   end
 
   internal:
-    #h   ms   = resolution()
     r  integer
-    RefractoryCounts integer = 5 # Changed from steps(t_ref)
+    RefractoryCounts integer = teps(t_ref)
   end
 
   input:

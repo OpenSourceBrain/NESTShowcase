@@ -1,0 +1,26 @@
+<!-- Generated on Jun 24, 2016 1:39:33 PM.-->
+
+<Lems>
+    <Target component="simulation"/>
+    <Include file="predefined_components.xml"/>
+    <Include file="iaf_psc_alpha_nestml.xml"/>
+
+    <Component id="gen1" type="spikeGenerator" period="30ms"/>
+
+    <Network id="net1">
+        <Population id="gen" component="gen1" size="1"/>
+        <Population id="p1" component="iaf_psc_alpha_nestml_instance" size="1"/>
+        <PortToPortConnection from="gen[0]" to="p1[0]" sourceport="a" targetport="ex_spikes"/>
+        <PortToPortConnection from="gen[0]" to="p1[0]" sourceport="a" targetport="in_spikes"/>
+    </Network>
+
+    <Simulation id="sim1" length="400ms" step="0.1ms" target="net1">
+        <Display id="d0" title="Simulation(Jun 24, 2016 1:39:33 PM)"
+                 timeScale="1ms" xmin="-10" xmax="90" ymin="-90" ymax="60">
+            <Line id="tsince" quantity="gen[0]/tsince" scale="1ms" timeScale="1ms" color="#3333cc" />
+            <Line id="neuron1" quantity="p1[0]/V" scale="1mV" timeScale="1ms" color="#9A861D"/>
+        </Display>
+    </Simulation>
+
+</Lems>
+
