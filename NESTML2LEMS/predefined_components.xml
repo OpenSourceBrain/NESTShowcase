@@ -1,0 +1,139 @@
+<!-- Generated on Jun 24, 2016 1:39:33 PM.-->
+
+<Lems>
+    <!--A type declaration for networks of neurons.-->
+    <ComponentType name="Network">
+        <Children name="populations" type="Population"/>
+        <Children name="connectivities" type="EventConnectivity"/>
+        <Children name="ex_connectivities" type="PortToPortConnection"/>
+    </ComponentType>
+
+    <!--Defines the population of a network.-->
+    <ComponentType name="Population">
+        <ComponentReference name="component" type="Component"/>
+        <Parameter name="size" dimension="none"/>
+        <Structure>
+            <MultiInstantiate number="size" component="component"/>
+        </Structure>
+    </ComponentType>
+
+    <!--Defines the connection types between neurons.-->
+    <ComponentType name="EventConnectivity">
+        <Link name="source" type="Population"/>
+        <Link name="target" type="Population"/>
+        <Child name="Connections" type="ConnectionPattern"/>
+    </ComponentType>
+
+    <!--A super component for all connection patterns.-->
+    <ComponentType name="ConnectionPattern"/>
+
+    <!--Connects all neurons to all other neurons.-->
+    <ComponentType name="AllAll" extends="ConnectionPattern">
+        <Structure>
+            <ForEach instances="../source" as="a">
+                <ForEach instances="../target" as="b">
+                    <EventConnection from="a" to="b"/>
+                </ForEach>
+            </ForEach>
+        </Structure>
+    </ComponentType>
+
+    <!--This component defines a port to port connector.-->
+    <ComponentType name="PortToPortConnection">
+        <Path name="from"/>
+        <Path name="to"/>
+        <Path name="sourceport"/>
+        <Path name="targetport"/>
+        <Structure>
+            <With instance="from" as="a"/>
+            <With instance="to" as="b"/>
+            <EventConnection from="a" to="b" sourcePort="sourceport" targetPort="targetport"/>
+        </Structure>
+    </ComponentType>
+
+    <!--This component defines a spike generator which generates spikes each x-th ms.-->
+    <!--The time between spikes is handed over as argumenet-->
+    <ComponentType name="spikeGenerator">
+        <Parameter name="period" dimension="time" />
+        <EventPort name="a" direction="out" />
+        <Exposure name="tsince" dimension="time" />
+        <Dynamics>
+            <StateVariable name="tsince" exposure="tsince" dimension="time" />
+            <TimeDerivative variable="tsince" value="1" />
+            <OnCondition test="tsince .gt. period">
+                <StateAssignment variable="tsince" value="0" />
+                <EventOut port="a" />
+            </OnCondition>
+        </Dynamics>
+    </ComponentType>
+    <!--Used to display the plot-->
+    <ComponentType name="Display">
+        <Text name="title"/>
+        <Parameter name="xmin" dimension="none"/>
+        <Parameter name="xmax" dimension="none"/>
+        <Parameter name="ymin" dimension="none"/>
+        <Parameter name="ymax" dimension="none"/>
+
+        <Parameter name="timeScale" dimension="time"/>
+        <Children name="lines" type="Line"/>
+
+        <Simulation>
+            <DataDisplay title="title" dataRegion="xmin,xmax,ymin,ymax"/>
+        </Simulation>
+    </ComponentType>
+
+
+    <ComponentType name="Line">
+        <Parameter name="scale" dimension="*"/>
+        <Parameter name="timeScale" dimension="*"/>
+        <Text name="color"/>
+        <Path name="quantity"/>
+        <Simulation>
+            <Record quantity="quantity" timeScale="timeScale" scale="scale" color="color"/>
+        </Simulation>
+    </ComponentType>
+
+
+    <ComponentType name="OutputFile">
+        <Text name="path"/>
+        <Text name="fileName"/>
+
+        <Children name="outputColumn" type="OutputColumn"/>
+
+        <Simulation>
+            <DataWriter path="path" fileName="fileName"/>
+        </Simulation>
+
+    </ComponentType>
+
+
+    <ComponentType name="OutputColumn">
+        <Path name="quantity"/>
+        <Simulation>
+            <Record quantity="quantity"/>
+        </Simulation>
+    </ComponentType>
+
+
+
+    <ComponentType name="Simulation">
+        <Parameter name="length" dimension="time"/>
+        <Parameter name="step" dimension="time"/>
+
+        <ComponentReference name="target" type="Component"/>
+
+
+        <Children name="displays" type="Display"/>
+
+        <Children name="outputs" type="OutputFile"/>
+
+        <Dynamics>
+            <StateVariable name="t" dimension="time"/>
+        </Dynamics>
+
+        <Simulation>
+            <Run component="target" variable="t" increment="step" total="length"/>
+        </Simulation>
+    </ComponentType>
+
+</Lems>

@@ -1,0 +1,53 @@
+neuron iaf_psc_alpha_nestml:
+
+  state:
+    V mV
+    G_in, G_ex real
+    alias V_m mV = V + E_L # Membrane potential.
+  end
+    
+  equations:
+      G_in = (e/tau_syn_in) * t * exp(-1/tau_syn_in*t)
+      G_ex = (e/tau_syn_ex) * t * exp(-1/tau_syn_ex*t)
+
+      V' = -1/Tau * V + 1/C_m * (I_sum(G_in, in_spikes) + I_sum(G_ex, ex_spikes) + I_e + currents)
+  end
+
+  parameter:
+    C_m     pF = 250   # Capacity of the membrane
+    Tau     ms = 10    # Membrane time constant.
+    tau_syn_in ms = 2     # Time constant of synaptic current.
+    tau_syn_ex ms = 2     # Time constant of synaptic current.
+    t_ref   ms = 2     # Refractory period.
+    E_L     mV = -70  # Resting potential.
+    alias V_reset mV = -70mV - E_L
+    alias Theta   mV = -55mV - E_L
+    I_e     pA = 0     # External current.
+  end
+
+  internal:
+    r  integer
+    RefractoryCounts integer = teps(t_ref)
+  end
+
+  input:
+    ex_spikes   <- excitatory spike
+    in_spikes   <- inhibitory spike
+    currents    <- current
+  end
+
+  output: spike
+
+  update:
+	if r== 0: #not refractory
+		integrate(V)
+	else:
+		r = r - 1
+	end
+	if V>=Theta:
+		r = RefractoryCounts
+		V = V_reset
+		emitSpike()
+	end	
+  end
+end

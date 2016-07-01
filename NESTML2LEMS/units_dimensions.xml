@@ -1,0 +1,10 @@
+<Lems>
+<Dimension name="voltage" m="1" l="2" t="-3" i="-1"/>
+<Dimension name="current" i="1"/>
+<Dimension name="capacitance" m="-1" l="-2" t="4" i="2"/>
+<Dimension name="time" t="1"/>
+<Unit symbol="pA" dimension="current" power="-12"/>
+<Unit symbol="pF" dimension="capacitance" power="-12"/>
+<Unit symbol="ms" dimension="time" power="-3"/>
+<Unit symbol="mV" dimension="voltage" power="-3"/>
+</Lems>
