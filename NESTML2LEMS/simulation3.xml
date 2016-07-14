@@ -11,14 +11,14 @@
     
     <pulseGenerator id="pulseGen1" delay="100ms" duration="100ms" amplitude="0.08nA"/>
     
-    <alphaSynapse id="synalpha" gbase="0.5nS" erev="0mV" tau="2ms"/>
+    <alphaCurrentSynapse id="alphaSyn" tau="1.0ms" ibase="1nA"/>
 
     <network id="net1">
         <population id="gen" component="gen1" size="1"/>
         <population id="p1" component="iaf_psc_alpha_nestml_instance1" size="1"/>
         <population id="p2" component="iaf_psc_alpha_nestml_instance2" size="1"/>
         
-        <projection id="proj0" presynapticPopulation="gen" postsynapticPopulation="p1" synapse="synalpha">
+        <projection id="proj0" presynapticPopulation="gen" postsynapticPopulation="p1" synapse="alphaSyn">
             <connection id="0" preCellId="../gen[0]" postCellId="../p1[0]"/>
         </projection>
         
@@ -34,10 +34,10 @@
                  timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
             <Line id="neuron2: V (mV)" quantity="p2[0]/V" scale="1mV" timeScale="1ms" color="#fff000"/>
         </Display>
-       <!-- <Display id="d2" title="Synapses"
-                 timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
-            <Line id="I exc" quantity="p1[0]/I_shape_ex" scale="1" timeScale="1ms" color="#3333cc" />
-        </Display>-->
+        <Display id="d2" title="Synapses"
+                 timeScale="1ms" xmin="-10" xmax="110" ymin="-.1" ymax="1.1">
+            <Line id="I exc " quantity="p1[0]/synapses:alphaSyn:0/i" scale="1nA" timeScale="1ms" color="#3333cc" />
+        </Display>
     </Simulation>
 
 </Lems>

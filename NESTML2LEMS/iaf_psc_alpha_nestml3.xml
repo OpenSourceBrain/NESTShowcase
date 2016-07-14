@@ -8,20 +8,12 @@
 
     <Include file="units_dimensions.xml"/>
 
-    <ComponentType name="iaf_psc_alpha_nestml"
-        extends="baseCellMembPot">
-        <!--Following elements are not supported or required by LEMS:-->
-        <!--Not supported function call(s) found in differential equation of "V" in lines <12,4> to <12,108>.-->
+    <ComponentType name="iaf_psc_alpha_nestml" extends="baseCellMembPot">
 
         <Parameter name="I_e" dimension="current"/>
-               
-        <Parameter name="C_m" dimension="capacitance" description="Total capacitance of the cell membrane"/>
-        
-        
+        <Parameter name="C_m" dimension="capacitance"/>
         <Parameter name="V_init" dimension="voltage" value="0mV"/>
-        
         <Parameter name="Tau" dimension="time" value="10ms"/>
-        
         <Parameter name="t_ref" dimension="time" value="2ms"/>
         <Parameter name="E_L" dimension="voltage" value="-70mV"/>
 
@@ -34,11 +26,6 @@
         <Constant name="RefractoryCounts" dimension="none" value="5"/>
 
         <Attachments name="synapses" type="basePointCurrent"/>
-        
-        
-        <EventPort name="ex_spikes" direction="in"/>
-        <EventPort name="in_spikes" direction="in"/>
-        <!--<EventPort name="currents" direction="in"/>-->
         
         <EventPort name="spike" direction="out"/>
         
@@ -58,7 +45,6 @@
                 <StateAssignment variable="r" value="0"/>
             </OnStart>
 
-               
               
             <Regime name="refractory">
                 <OnEntry>
@@ -71,7 +57,7 @@
             </Regime>
 
             <Regime name="integrating" initial="true">
-                <TimeDerivative variable="V" value="-1/Tau * V + 1/C_m * ( I_e )" />
+                <TimeDerivative variable="V" value="-1/Tau * V + 1/C_m * ( I_e + iSyn) " />
                 <OnCondition test="V .geq. Theta">
                     <EventOut port="spike"/>
                     <Transition regime="refractory" />
