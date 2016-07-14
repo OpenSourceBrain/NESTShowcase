@@ -12,6 +12,7 @@
         <!--Following elements are not supported or required by LEMS:-->
         <!--Not supported function call(s) found in differential equation of "V" in lines <12,4> to <12,108>.-->
 
+        <Parameter name="I_e" dimension="current"/>
 
         <DerivedParameter name="V_reset" dimension="voltage" value="-constant70mV-E_L"/>
         <DerivedParameter name="Theta" dimension="voltage" value="-constant55mV-E_L"/>
@@ -23,15 +24,14 @@
         <Constant name="tau_syn_ex" dimension="time" value="2ms"/>
         <Constant name="t_ref" dimension="time" value="2ms"/>
         <Constant name="E_L" dimension="voltage" value="-70mV"/>
-        <Constant name="I_e" dimension="current" value="1000pA"/>
         <Constant name="constant70mV" dimension="voltage" value="70mV"/>
         <Constant name="constant55mV" dimension="voltage" value="55mV"/>
-        <Constant name="RefractoryCounts" dimension="none" value="2"/>
+        <Constant name="RefractoryCounts" dimension="none" value="5"/>
 
         <EventPort name="ex_spikes" direction="in"/>
         <EventPort name="in_spikes" direction="in"/>
-        <!--<EventPort name="currents" direction="in"/>
-        <EventPort name="spike" direction="out"/>-->
+        <!--<EventPort name="currents" direction="in"/>-->
+        <EventPort name="spike" direction="out"/>
 
         <Dynamics>
             <StateVariable name="V" dimension="voltage"/>
@@ -42,8 +42,8 @@
               
             <DerivedVariable name="V_m" dimension="voltage" value="V+E_L"/>
 
-            <TimeDerivative variable="I_shape_in" value="((exp(1)/tau_syn_in)*t*exp(-1/tau_syn_in*t))/t"/>
-            <TimeDerivative variable="I_shape_ex" value="((exp(1)/tau_syn_ex)*t*exp(-1/tau_syn_ex*t))/t"/>
+            <DerivedVariable variable="I_shape_in" value="((exp(1)/tau_syn_in)*t*exp(-1/tau_syn_in*t))/t"/>
+            <DerivedVariable variable="I_shape_ex" value="((exp(1)/tau_syn_ex)*t*exp(-1/tau_syn_ex*t))/t"/>
 
             <OnStart>
                 <StateAssignment variable="V" value="V_init"/>
@@ -65,17 +65,21 @@
             <Regime name="integrating" initial="true">
                 <TimeDerivative variable="V" value="-1/Tau * V + 1/C_m * ( I_e )" />
                 <OnCondition test="V .geq. Theta">
-                    <!--<EventOut port="spike"/>-->
+                    <EventOut port="spike"/>
                     <Transition regime="refractory" />
                 </OnCondition>
                 <OnEvent port="ex_spikes">
-                  <StateAssignment variable="V" value="V + 0"/>
+                  <StateAssignment variable="I_shape_ex" value="I_shape_ex + 1"/>
+                </OnEvent>
+                <OnEvent port="in_spikes">
+                  <StateAssignment variable="I_shape_in" value="I_shape_in - 1"/>
                 </OnEvent>
             </Regime>
 
         </Dynamics>
     </ComponentType>
 
-    <Component id="iaf_psc_alpha_nestml_instance" type="iaf_psc_alpha_nestml"/>
+    <Component id="iaf_psc_alpha_nestml_instance1" type="iaf_psc_alpha_nestml" I_e="0pA"/>
+    <Component id="iaf_psc_alpha_nestml_instance2" type="iaf_psc_alpha_nestml" I_e="1000pA"/>
 
 </Lems>

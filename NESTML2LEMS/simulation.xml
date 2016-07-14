@@ -9,16 +9,25 @@
 
     <Network id="net1">
         <Population id="gen" component="gen1" size="1"/>
-        <Population id="p1" component="iaf_psc_alpha_nestml_instance" size="1"/>
-        <!--<PortToPortConnection from="gen[0]" to="p1[0]" sourceport="a" targetport="ex_spikes"/>
-        <PortToPortConnection from="gen[0]" to="p1[0]" sourceport="a" targetport="in_spikes"/>-->
+        <Population id="p1" component="iaf_psc_alpha_nestml_instance1" size="1"/>
+        <Population id="p2" component="iaf_psc_alpha_nestml_instance2" size="1"/>
+        <PortToPortConnection from="gen[0]" to="p1[0]" sourceport="a" targetport="ex_spikes"/>
+        <!--<PortToPortConnection from="gen[0]" to="p1[0]" sourceport="a" targetport="in_spikes"/>-->
     </Network>
 
     <Simulation id="sim1" length="100ms" step="0.01ms" target="net1">
-        <Display id="d0" title="Simulation"
+        <Display id="d0" title="Connected cells"
                  timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
             <Line id="spike source: tsince (ms)" quantity="gen[0]/tsince" scale="1ms" timeScale="1ms" color="#3333cc" />
             <Line id="neuron1: V (mV)" quantity="p1[0]/V" scale="1mV" timeScale="1ms" color="#ff0000"/>
+        </Display>
+        <Display id="d1" title="Current input cell"
+                 timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
+            <Line id="neuron2: V (mV)" quantity="p2[0]/V" scale="1mV" timeScale="1ms" color="#fff000"/>
+        </Display>
+        <Display id="d2" title="Synapses"
+                 timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
+            <Line id="I exc" quantity="p1[0]/I_shape_ex" scale="1" timeScale="1ms" color="#3333cc" />
         </Display>
     </Simulation>
 
