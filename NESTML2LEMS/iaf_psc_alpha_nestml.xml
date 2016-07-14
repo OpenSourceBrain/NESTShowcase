@@ -27,27 +27,43 @@
         <Constant name="constant70mV" dimension="voltage" value="70mV"/>
         <Constant name="constant55mV" dimension="voltage" value="55mV"/>
         <Constant name="RefractoryCounts" dimension="none" value="5"/>
+        
+        <Constant name="LONG_TIME_AGO" dimension="time" value="-1e6ms"/>
+        
+        <Constant name="constant100pA" dimension="current" value="100pA"/>
 
         <EventPort name="ex_spikes" direction="in"/>
         <EventPort name="in_spikes" direction="in"/>
         <!--<EventPort name="currents" direction="in"/>-->
         <EventPort name="spike" direction="out"/>
+        
+        <Exposure name="I_shape_ex" dimension="current"/>
+        <Exposure name="I_shape_in" dimension="current"/>
 
         <Dynamics>
             <StateVariable name="V" dimension="voltage"/>
             <StateVariable name="r" dimension="none"/>
-            <StateVariable name="I_shape_in" dimension="none"/>
-            <StateVariable name="I_shape_ex" dimension="none"/>
+            
             <StateVariable name="lastSpikeTime" dimension="time"/>
+            
+            <StateVariable name="last_ex_input_time" dimension="time"/>
+            <StateVariable name="last_in_input_time" dimension="time"/>
+            <StateVariable name="offset_ex_input" dimension="current"/>
+            <StateVariable name="offset_in_input" dimension="current"/>
+            
+            
+            <StateVariable name="last_G_in" dimension="current"/>
               
             <DerivedVariable name="V_m" dimension="voltage" value="V+E_L"/>
-<!--
-            <DerivedVariable name="I_shape_in" value="((exp(1)/tau_syn_in)*t*exp(-1/tau_syn_in*t))/t" dimension="none"/>
-            <DerivedVariable name="I_shape_ex" value="((exp(1)/tau_syn_ex)*t*exp(-1/tau_syn_ex*t))/t" dimension="none"/>-->
+
+            <DerivedVariable name="I_shape_ex" value="offset_ex_input + constant100pA * (exp(1)/tau_syn_ex)*(t-last_ex_input_time)*exp(-1 * (t-last_ex_input_time)/tau_syn_ex)" dimension="current" exposure="I_shape_ex"/>
+            <DerivedVariable name="I_shape_in" value="offset_in_input + -1 * constant100pA * (exp(1)/tau_syn_in)*(t-last_in_input_time)*exp(-1 * (t-last_in_input_time)/tau_syn_in)" dimension="current" exposure="I_shape_in"/>
 
             <OnStart>
                 <StateAssignment variable="V" value="V_init"/>
                 <StateAssignment variable="r" value="0"/>
+                <StateAssignment variable="last_ex_input_time" value="LONG_TIME_AGO"/>
+                <StateAssignment variable="last_in_input_time" value="LONG_TIME_AGO"/>
             </OnStart>
 
                
@@ -63,12 +79,13 @@
             </Regime>
 
             <Regime name="integrating" initial="true">
-                <TimeDerivative variable="V" value="-1/Tau * V + 1/C_m * ( I_e )" />
+                <TimeDerivative variable="V" value="-1/Tau * V + 1/C_m * ( I_shape_ex + I_shape_in + I_e )" />
                 <OnEvent port="ex_spikes">
-                  <StateAssignment variable="I_shape_ex" value="I_shape_ex + 1"/>
+                  <StateAssignment variable="last_ex_input_time" value="t"/>
+                  <!--<StateAssignment variable="offset_ex_input" value="I_shape_ex"/>-->
                 </OnEvent>
                 <OnEvent port="in_spikes">
-                  <StateAssignment variable="I_shape_in" value="I_shape_in - 1"/>
+                  <StateAssignment variable="last_in_input_time" value="t"/>
                 </OnEvent>
                 <OnCondition test="V .geq. Theta">
                     <EventOut port="spike"/>
