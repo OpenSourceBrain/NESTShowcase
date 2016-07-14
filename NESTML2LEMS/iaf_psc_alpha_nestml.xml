@@ -72,8 +72,10 @@
                 <OnEntry>
                     <StateAssignment variable="lastSpikeTime" value="t" />
                     <StateAssignment variable="V" value="V_reset" />
+                    <StateAssignment variable="r" value="RefractoryCounts" />
                 </OnEntry>
                 <OnCondition test="t .gt. lastSpikeTime + t_ref">
+                    <StateAssignment variable="r" value="0" />
                     <Transition regime="integrating" />
                 </OnCondition>
             </Regime>

@@ -21,19 +21,20 @@
         <Display id="d0" title="Connected cells"
                  timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
             <Line id="spiker 1: tsince (ms)" quantity="popgen1[0]/tsince" scale="1ms" timeScale="1ms" color="#3333cc" />
-            <Line id="spiker 2: tsince (ms)" quantity="popgen2[0]/tsince" scale="1ms" timeScale="1ms" color="#444fff" />
+            <Line id="spiker 2: tsince (ms)" quantity="popgen2[0]/tsince" scale="1ms" timeScale="1ms" color="#004400" />
             <Line id="neuron1: V (mV)" quantity="p1[0]/V" scale="1mV" timeScale="1ms" color="#ff0000"/>
-            <Line id="neuron1: V_m (mV)" quantity="p1[0]/V_m" scale="1mV" timeScale="1ms" color="#fffff0"/>
+            <Line id="neuron1: V_m (mV)" quantity="p1[0]/V_m" scale="1mV" timeScale="1ms" color="#ffff00"/>
         </Display>
         <Display id="d1" title="Current input cell"
                  timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
-            <Line id="neuron2: V (mV)" quantity="p2[0]/V" scale="1mV" timeScale="1ms" color="#fff000"/>
-            <Line id="neuron2: V_m (mV)" quantity="p2[0]/V_m" scale="1mV" timeScale="1ms" color="#fffff0"/>
+            <Line id="neuron2: V (mV)" quantity="p2[0]/V" scale="1mV" timeScale="1ms" color="#ff0000"/>
+            <Line id="neuron2: V_m (mV)" quantity="p2[0]/V_m" scale="1mV" timeScale="1ms" color="#ffff00"/>
+            <Line id="neuron2: r" quantity="p2[0]/r" scale="1" timeScale="1ms" color="#ffffff"/>
         </Display>
         <Display id="d2" title="Synapses"
-                 timeScale="1ms" xmin="-10" xmax="110" ymin="-5" ymax="5">
-            <Line id="I exc" quantity="p1[0]/I_shape_ex" scale="1pA" timeScale="1ms" color="#3333cc" />
-            <Line id="I inh" quantity="p1[0]/I_shape_in" scale="1pA" timeScale="1ms" color="#fff222" />
+                 timeScale="1ms" xmin="-10" xmax="110" ymin="-110" ymax="110">
+            <Line id="I exc (pA)" quantity="p1[0]/I_shape_ex" scale="1pA" timeScale="1ms" color="#3333cc" />
+            <Line id="I inh (pA)" quantity="p1[0]/I_shape_in" scale="1pA" timeScale="1ms" color="#004400" />
         </Display>
     </Simulation>
 
