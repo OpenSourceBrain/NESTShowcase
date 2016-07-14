@@ -1,0 +1,44 @@
+<Lems>
+    <Target component="sim3"/>
+    
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+    
+    <Include file="iaf_psc_alpha_nestml3.xml"/>
+
+    <spikeGenerator id="gen1" period="30ms"/>
+    
+    <pulseGenerator id="pulseGen1" delay="100ms" duration="100ms" amplitude="0.08nA"/>
+    
+    <alphaSynapse id="synalpha" gbase="0.5nS" erev="0mV" tau="2ms"/>
+
+    <network id="net1">
+        <population id="gen" component="gen1" size="1"/>
+        <population id="p1" component="iaf_psc_alpha_nestml_instance1" size="1"/>
+        <population id="p2" component="iaf_psc_alpha_nestml_instance2" size="1"/>
+        
+        <projection id="proj0" presynapticPopulation="gen" postsynapticPopulation="p1" synapse="synalpha">
+            <connection id="0" preCellId="../gen[0]" postCellId="../p1[0]"/>
+        </projection>
+        
+    </network>
+
+    <Simulation id="sim3" length="100ms" step="0.01ms" target="net1">
+        <Display id="d0" title="Connected cells"
+                 timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
+            <Line id="spike source: tsince (ms)" quantity="gen[0]/tsince" scale="1ms" timeScale="1ms" color="#3333cc" />
+            <Line id="neuron1: V (mV)" quantity="p1[0]/V" scale="1mV" timeScale="1ms" color="#ff0000"/>
+        </Display>
+        <Display id="d1" title="Current input cell"
+                 timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
+            <Line id="neuron2: V (mV)" quantity="p2[0]/V" scale="1mV" timeScale="1ms" color="#fff000"/>
+        </Display>
+       <!-- <Display id="d2" title="Synapses"
+                 timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
+            <Line id="I exc" quantity="p1[0]/I_shape_ex" scale="1" timeScale="1ms" color="#3333cc" />
+        </Display>-->
+    </Simulation>
+
+</Lems>
+

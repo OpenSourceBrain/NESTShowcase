@@ -8,42 +8,50 @@
 
     <Include file="units_dimensions.xml"/>
 
-    <ComponentType name="iaf_psc_alpha_nestml">
+    <ComponentType name="iaf_psc_alpha_nestml"
+        extends="baseCellMembPot">
         <!--Following elements are not supported or required by LEMS:-->
         <!--Not supported function call(s) found in differential equation of "V" in lines <12,4> to <12,108>.-->
 
         <Parameter name="I_e" dimension="current"/>
+               
+        <Parameter name="C_m" dimension="capacitance" description="Total capacitance of the cell membrane"/>
+        
+        
+        <Parameter name="V_init" dimension="voltage" value="0mV"/>
+        
+        <Parameter name="Tau" dimension="time" value="10ms"/>
+        
+        <Parameter name="t_ref" dimension="time" value="2ms"/>
+        <Parameter name="E_L" dimension="voltage" value="-70mV"/>
 
         <DerivedParameter name="V_reset" dimension="voltage" value="-constant70mV-E_L"/>
         <DerivedParameter name="Theta" dimension="voltage" value="-constant55mV-E_L"/>
         
-        <Constant name="V_init" dimension="voltage" value="0mV"/>
-        <Constant name="C_m" dimension="capacitance" value="250pF"/>
-        <Constant name="Tau" dimension="time" value="10ms"/>
-        <Constant name="tau_syn_in" dimension="time" value="2ms"/>
-        <Constant name="tau_syn_ex" dimension="time" value="2ms"/>
-        <Constant name="t_ref" dimension="time" value="2ms"/>
-        <Constant name="E_L" dimension="voltage" value="-70mV"/>
         <Constant name="constant70mV" dimension="voltage" value="70mV"/>
         <Constant name="constant55mV" dimension="voltage" value="55mV"/>
+        
         <Constant name="RefractoryCounts" dimension="none" value="5"/>
 
+        <Attachments name="synapses" type="basePointCurrent"/>
+        
+        
         <EventPort name="ex_spikes" direction="in"/>
         <EventPort name="in_spikes" direction="in"/>
         <!--<EventPort name="currents" direction="in"/>-->
+        
         <EventPort name="spike" direction="out"/>
+        
+        <Exposure name="iSyn" dimension="current" description="Total current due to synaptic inputs"/>
 
         <Dynamics>
             <StateVariable name="V" dimension="voltage"/>
             <StateVariable name="r" dimension="none"/>
-            <StateVariable name="I_shape_in" dimension="none"/>
-            <StateVariable name="I_shape_ex" dimension="none"/>
             <StateVariable name="lastSpikeTime" dimension="time"/>
               
-            <DerivedVariable name="V_m" dimension="voltage" value="V+E_L"/>
-<!--
-            <DerivedVariable name="I_shape_in" value="((exp(1)/tau_syn_in)*t*exp(-1/tau_syn_in*t))/t" dimension="none"/>
-            <DerivedVariable name="I_shape_ex" value="((exp(1)/tau_syn_ex)*t*exp(-1/tau_syn_ex*t))/t" dimension="none"/>-->
+            <DerivedVariable name="v" dimension="voltage" value="V+E_L" exposure="v"/>
+                
+            <DerivedVariable name="iSyn" dimension="current" exposure="iSyn" select="synapses[*]/i" reduce="add" />
 
             <OnStart>
                 <StateAssignment variable="V" value="V_init"/>
@@ -64,12 +72,6 @@
 
             <Regime name="integrating" initial="true">
                 <TimeDerivative variable="V" value="-1/Tau * V + 1/C_m * ( I_e )" />
-                <OnEvent port="ex_spikes">
-                  <StateAssignment variable="I_shape_ex" value="I_shape_ex + 1"/>
-                </OnEvent>
-                <OnEvent port="in_spikes">
-                  <StateAssignment variable="I_shape_in" value="I_shape_in - 1"/>
-                </OnEvent>
                 <OnCondition test="V .geq. Theta">
                     <EventOut port="spike"/>
                     <Transition regime="refractory" />
@@ -79,7 +81,10 @@
         </Dynamics>
     </ComponentType>
 
-    <Component id="iaf_psc_alpha_nestml_instance1" type="iaf_psc_alpha_nestml" I_e="0pA"/>
-    <Component id="iaf_psc_alpha_nestml_instance2" type="iaf_psc_alpha_nestml" I_e="1000pA"/>
+    <iaf_psc_alpha_nestml id="iaf_psc_alpha_nestml_instance1" 
+            I_e="0pA" C_m="250pF" V_init="0mV" Tau="10ms" t_ref="2ms" E_L="-70mV"/>
+            
+    <iaf_psc_alpha_nestml id="iaf_psc_alpha_nestml_instance2" 
+            I_e="1000pA" C_m="250pF" V_init="0mV" Tau="10ms" t_ref="2ms" E_L="-70mV"/>
 
 </Lems>

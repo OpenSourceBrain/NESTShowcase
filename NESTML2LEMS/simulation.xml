@@ -24,6 +24,7 @@
         <Display id="d1" title="Current input cell"
                  timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
             <Line id="neuron2: V (mV)" quantity="p2[0]/V" scale="1mV" timeScale="1ms" color="#fff000"/>
+            <Line id="neuron2: V_m (mV)" quantity="p2[0]/V_m" scale="1mV" timeScale="1ms" color="#fffff0"/>
         </Display>
         <Display id="d2" title="Synapses"
                  timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
