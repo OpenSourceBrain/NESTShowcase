@@ -20,13 +20,13 @@
         <Constant name="V_init" dimension="voltage" value="0mV"/>
         <Constant name="C_m" dimension="capacitance" value="250pF"/>
         <Constant name="Tau" dimension="time" value="10ms"/>
-        <Constant name="tau_syn_in" dimension="time" value="2ms"/>
-        <Constant name="tau_syn_ex" dimension="time" value="2ms"/>
+        <Constant name="tau_syn_in" dimension="time" value="7ms"/>
+        <Constant name="tau_syn_ex" dimension="time" value="10ms"/>
         <Constant name="t_ref" dimension="time" value="2ms"/>
         <Constant name="E_L" dimension="voltage" value="-70mV"/>
         <Constant name="constant70mV" dimension="voltage" value="70mV"/>
         <Constant name="constant55mV" dimension="voltage" value="55mV"/>
-        <Constant name="RefractoryCounts" dimension="none" value="5"/>
+        <Constant name="RefractoryCounts" dimension="none" value="200"/>
         
         <Constant name="LONG_TIME_AGO" dimension="time" value="-1e6ms"/>
         
@@ -51,13 +51,12 @@
             <StateVariable name="offset_ex_input" dimension="current"/>
             <StateVariable name="offset_in_input" dimension="current"/>
             
-            
             <StateVariable name="last_G_in" dimension="current"/>
+            
+            <StateVariable name="I_shape_ex" dimension="current" exposure="I_shape_ex"/>
+            <StateVariable name="I_shape_in" dimension="current" exposure="I_shape_in"/>
               
             <DerivedVariable name="V_m" dimension="voltage" value="V+E_L"/>
-
-            <DerivedVariable name="I_shape_ex" value="offset_ex_input + constant100pA * (exp(1)/tau_syn_ex)*(t-last_ex_input_time)*exp(-1 * (t-last_ex_input_time)/tau_syn_ex)" dimension="current" exposure="I_shape_ex"/>
-            <DerivedVariable name="I_shape_in" value="offset_in_input + -1 * constant100pA * (exp(1)/tau_syn_in)*(t-last_in_input_time)*exp(-1 * (t-last_in_input_time)/tau_syn_in)" dimension="current" exposure="I_shape_in"/>
 
             <OnStart>
                 <StateAssignment variable="V" value="V_init"/>
@@ -66,7 +65,6 @@
                 <StateAssignment variable="last_in_input_time" value="LONG_TIME_AGO"/>
             </OnStart>
 
-               
               
             <Regime name="refractory">
                 <OnEntry>
@@ -74,9 +72,11 @@
                     <StateAssignment variable="V" value="V_reset" />
                     <StateAssignment variable="r" value="RefractoryCounts" />
                 </OnEntry>
-                <OnCondition test="t .gt. lastSpikeTime + t_ref">
-                    <StateAssignment variable="r" value="0" />
+                <OnCondition test="r .eq. 0">
                     <Transition regime="integrating" />
+                </OnCondition>
+                <OnCondition test="r .gt. 0">
+                    <StateAssignment variable="r" value="r - 1" />
                 </OnCondition>
             </Regime>
 
@@ -84,11 +84,16 @@
                 <TimeDerivative variable="V" value="-1/Tau * V + 1/C_m * ( I_shape_ex + I_shape_in + I_e )" />
                 <OnEvent port="ex_spikes">
                   <StateAssignment variable="last_ex_input_time" value="t"/>
-                  <!--<StateAssignment variable="offset_ex_input" value="I_shape_ex"/>-->
+                  <StateAssignment variable="offset_ex_input" value="I_shape_ex"/>
                 </OnEvent>
                 <OnEvent port="in_spikes">
                   <StateAssignment variable="last_in_input_time" value="t"/>
+                  <StateAssignment variable="offset_in_input" value="I_shape_in"/>
                 </OnEvent>
+                <OnCondition test="V .lt. Theta">
+                  <StateAssignment variable="I_shape_ex" value="(offset_ex_input + constant100pA) * (exp(1)/tau_syn_ex)*(t-last_ex_input_time)*exp(-1 * (t-last_ex_input_time)/tau_syn_ex)"/>
+                  <StateAssignment variable="I_shape_in" value="(offset_in_input - constant100pA) * (exp(1)/tau_syn_in)*(t-last_in_input_time)*exp(-1 * (t-last_in_input_time)/tau_syn_in)"/>
+                </OnCondition>
                 <OnCondition test="V .geq. Theta">
                     <EventOut port="spike"/>
                     <Transition regime="refractory" />

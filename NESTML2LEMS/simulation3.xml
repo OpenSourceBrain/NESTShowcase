@@ -7,13 +7,13 @@
     
     <Include file="iaf_psc_alpha_nestml3.xml"/>
 
-    <spikeGenerator id="gen1" period="30ms"/>
+    <spikeGenerator id="gen1" period="20ms"/>
     <spikeGenerator id="gen2" period="35ms"/>
     
     <pulseGenerator id="pulseGen1" delay="100ms" duration="100ms" amplitude="0.08nA"/>
     
-    <alphaCurrentSynapse id="excSyn" tau="2ms" ibase=".1nA"/>
-    <alphaCurrentSynapse id="inhSyn" tau="2ms" ibase="-.1nA"/>
+    <alphaCurrentSynapse id="excSyn" tau="10ms" ibase=".1nA"/>
+    <alphaCurrentSynapse id="inhSyn" tau="7ms" ibase="-.1nA"/>
 
     <network id="net1">
         <population id="popGen1" component="gen1" size="1"/>
@@ -31,21 +31,22 @@
         
     </network>
 
-    <Simulation id="sim3" length="100ms" step="0.01ms" target="net1">
+    <Simulation id="sim3" length="200ms" step="0.01ms" target="net1">
         <Display id="d0" title="Connected cells"
-                 timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
+                 timeScale="1ms" xmin="-10" xmax="210" ymin="-90" ymax="60">
             <Line id="spiker 1: tsince (ms)" quantity="popGen1[0]/tsince" scale="1ms" timeScale="1ms" color="#3333cc" />
             <Line id="spiker 2: tsince (ms)" quantity="popGen2[0]/tsince" scale="1ms" timeScale="1ms" color="#004400" />
             <Line id="neuron1: V (mV)" quantity="p1[0]/V" scale="1mV" timeScale="1ms" color="#ff0000"/>
             <Line id="neuron1: v (mV)" quantity="p1[0]/v" scale="1mV" timeScale="1ms" color="#ffff00"/>
         </Display>
         <Display id="d1" title="Current input cell"
-                 timeScale="1ms" xmin="-10" xmax="110" ymin="-90" ymax="60">
+                 timeScale="1ms" xmin="-10" xmax="210" ymin="-90" ymax="60">
             <Line id="neuron2: V (mV)" quantity="p2[0]/V" scale="1mV" timeScale="1ms" color="#ff0000"/>
             <Line id="neuron2: v (mV)" quantity="p2[0]/v" scale="1mV" timeScale="1ms" color="#ffff00"/>
+            <Line id="neuron2: lastSpikeTime (ms)" quantity="p2[0]/lastSpikeTime" scale="1ms" timeScale="1ms" color="#ffffff"/>
         </Display>
         <Display id="d2" title="Synapses"
-                 timeScale="1ms" xmin="-10" xmax="110" ymin="-110" ymax="110">
+                 timeScale="1ms" xmin="-10" xmax="210" ymin="-110" ymax="110">
             <Line id="I exc (pA)" quantity="p1[0]/synapses:excSyn:0/i" scale="1pA" timeScale="1ms" color="#3333cc" />
             <Line id="I inh (pA)" quantity="p1[0]/synapses:inhSyn:0/i" scale="1pA" timeScale="1ms" color="#004400" />
         </Display>
