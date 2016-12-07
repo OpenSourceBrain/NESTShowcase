@@ -1,0 +1,32 @@
+<Lems>
+    
+    <!-- 
+
+        This LEMS file has been automatically generated using PyNeuroML v0.2.2 (libNeuroML v0.2.23)
+
+     -->
+    
+    <!-- Specify which component to run -->
+    <Target component="Sim_SimpleNet"/>
+
+    <!-- Include core NeuroML2 ComponentType definitions -->
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+    
+    <Include file="SimpleNet/iaf.cell.nml"/>
+    <Include file="SimpleNet.net.nml"/>
+   
+    <Simulation id="Sim_SimpleNet" length="500ms" step="0.025ms" target="SimpleNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+        
+        <Display id="DispPop__iaf_pop" title="Membrane potentials of cells in iaf_pop" timeScale="1ms" xmin="-50.0" xmax="550.0" ymin="-90" ymax="50">
+            <Line id="iaf_pop[0]: v" quantity="iaf_pop/0/iaf/v" scale="1mV" color="#6aa799" timeScale="1ms"/>
+        </Display>
+        
+        <OutputFile id="Volts_file__iaf_pop" fileName="Sim_SimpleNet.iaf_pop.v.dat">
+            <OutputColumn id="v_iaf_pop_0_iaf_v" quantity="iaf_pop/0/iaf/v"/> 
+        </OutputFile>
+        
+    </Simulation>
+
+</Lems>
