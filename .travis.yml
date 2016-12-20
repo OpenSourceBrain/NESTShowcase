@@ -16,6 +16,7 @@ install:
 
 script:
     - omv all -V
+    - export PATH=$PATH:/home/travis/jnml/jNeuroMLJar
     - if [[ ${OMV_ENGINE} == "jNeuroML" ]]; then ./regenerate.sh ; fi
     
     
