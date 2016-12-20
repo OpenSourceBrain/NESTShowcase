@@ -16,6 +16,7 @@ install:
 
 script:
     - omv all -V
+    - ./regenerate.sh
     
     
     
