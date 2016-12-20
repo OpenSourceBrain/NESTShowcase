@@ -8,6 +8,7 @@ virtualenv:
 
 env:
     - OMV_ENGINE=jNeuroML
+    - OMV_ENGINE=jNeuroML_validate
     - OMV_ENGINE=jLEMS
 
 install: 
