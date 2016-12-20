@@ -1,4 +1,4 @@
-# NEST Showcase
+## NEST Showcase
 
 Mapping NeuroML2/LEMS to NEST. 
 
