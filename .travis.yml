@@ -16,7 +16,7 @@ install:
 
 script:
     - omv all -V
-    - ./regenerate.sh
+    - if [[ ${OMV_ENGINE} == "jNeuroML" ]]; then ./regenerate.sh ; fi
     
     
     
