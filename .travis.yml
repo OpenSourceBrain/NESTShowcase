@@ -37,6 +37,10 @@ script:
     - export JNML_HOME=/home/travis/jnml/jNeuroMLJar
     - export PATH=$PATH:$JNML_HOME
     - if [[ ${OMV_ENGINE} == "jNeuroML" ]]; then ./regenerate.sh ; fi
+    
+    # Set NEST variables
+    - source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh
+    
     - omv list-engines -V
     - env
     
