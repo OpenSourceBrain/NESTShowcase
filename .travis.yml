@@ -20,7 +20,15 @@ addons:
 
 
 language: python
-python: 2.7
+
+python: 
+  - "2.7"
+  # - "3.6"  see below
+  #- "3.7"
+  
+# remove this for py3..?
+virtualenv:
+    system_site_packages: true
 
 
 env:
@@ -38,8 +46,9 @@ script:
     - export PATH=$PATH:$JNML_HOME
     - if [[ ${OMV_ENGINE} == "jNeuroML" ]]; then ./regenerate.sh ; fi
     
+    
     # Set NEST variables
-    - source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh
+    - if [[ ${OMV_ENGINE} == "PyNEST" ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh ; fi
     
     - omv list-engines -V
     - env
