@@ -12,6 +12,7 @@ addons:
     - python-matplotlib 
     - python-sympy
     - python-tables 
+    - python-tk
     - python-tornado
     - libreadline6-dev 
     - libncurses5-dev 
