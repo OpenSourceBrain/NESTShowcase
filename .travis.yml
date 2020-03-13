@@ -39,6 +39,7 @@ env:
     - OMV_ENGINE=PyNEST:2.14.0
     - OMV_ENGINE=PyNEST:2.16.0
     - OMV_ENGINE=PyNEST:2.18.0
+    - OMV_ENGINE=PyNEST:2.20.0
 
 install: 
     - pip install git+https://github.com/OpenSourceBrain/osb-model-validation
