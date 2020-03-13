@@ -1,0 +1,44 @@
+
+
+neuron fn1:
+
+  initial_values:
+    V real = 0
+    W real = 0   
+  end
+
+    parameters:
+        I real = 0.8
+        SEC ms = 1000.0 ms
+    end
+
+    equations:
+
+
+        V' = ( (V - ((V*V*V) / 3)) - W + I) / SEC
+        W' = (0.08 * (V + 0.7 - 0.8 * W)) / SEC
+
+    end
+
+
+
+  input:
+    I_stim real <- current
+
+  end
+
+    output: spike
+
+    update:
+        integrate_odes()
+
+    end
+
+
+end
+
+
+
+
+
+

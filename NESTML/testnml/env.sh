@@ -1,0 +1,1 @@
+docker run -it   -v $PWD:/home/docker/local:rw  neuralensemble/osb_95 /bin/bash

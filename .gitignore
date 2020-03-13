@@ -5,3 +5,5 @@
 /NESTML2LEMS/tests.log
 /NESTML/izh2/target
 /NESTML/izh2/*.dat
+/NESTML/testnml/*.dat
+/NESTML/testnml/target
