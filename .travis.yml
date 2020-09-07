@@ -24,7 +24,6 @@ language: python
 
 python: 
   - "2.7"
-  - "3.6" 
   - "3.7" 
   
 
@@ -32,7 +31,8 @@ python:
 
 env:
     - OMV_ENGINE=jNeuroML
-    - OMV_ENGINE=PyNEST:2.18.0
+    - OMV_ENGINE=PyNEST
+    - OMV_ENGINE=NEST
 
 install: 
     - pip install git+https://github.com/OpenSourceBrain/osb-model-validation
@@ -45,7 +45,7 @@ script:
     
     
     # Set NEST variables
-    - if [[ ${OMV_ENGINE} == "PyNEST" ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh ; fi
+    - if [[ ${OMV_ENGINE} == *"NEST"* ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh ; fi
     
     - omv list-engines -V
     - env
