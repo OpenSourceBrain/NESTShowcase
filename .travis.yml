@@ -1,7 +1,6 @@
 # Framework for running automated tests on OSB using Travis-CI, see https://github.com/OpenSourceBrain/osb-model-validation
 
 dist: xenial
-sudo: false
 
 addons:
   apt:
@@ -12,8 +11,6 @@ addons:
     - python-matplotlib 
     - python-sympy
     - python-tables 
-    - python-tk
-    - python-tornado
     - libreadline6-dev 
     - libncurses5-dev 
     - libgsl0-dev
@@ -35,10 +32,18 @@ env:
     - OMV_ENGINE=NEST
 
 install: 
+    
+    - pip install scipy matplotlib # Why is this needed? Doesn't seem to get installed correctly with addons above...
+    
+    # Install OMV
+
     - pip install git+https://github.com/OpenSourceBrain/osb-model-validation
 
 script:
+    - omv list-engines -V
+    
     - omv all -V
+    
     - export JNML_HOME=/home/travis/jnml/jNeuroMLJar
     - export PATH=$PATH:$JNML_HOME
     - if [[ ${OMV_ENGINE} == "jNeuroML" ]]; then ./regenerate.sh ; fi
