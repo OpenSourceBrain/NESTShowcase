@@ -14,6 +14,7 @@ addons:
     - python-all-dev
     - libreadline6-dev 
     - libncurses5-dev 
+    - libboost-python-dev
     - libgsl0-dev
     - cython
 
@@ -39,9 +40,6 @@ install:
     - pip install git+https://github.com/OpenSourceBrain/osb-model-validation
 
 script:
-    - omv list-engines -V
-    
-    
     - omv list-engines -V
     
     - omv all -V
