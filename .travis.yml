@@ -25,8 +25,6 @@ python:
   - "3.7" 
   
 
-
-
 env:
     - OMV_ENGINE=jNeuroML
     - OMV_ENGINE=PyNEST
@@ -43,15 +41,16 @@ install:
 script:
     - omv list-engines -V
     
+    # Set NEST variables
+    - if [[ ${OMV_ENGINE} == *"NEST"* ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh ; fi
+    
+    - omv list-engines -V
+    
     - omv all -V
     
     - export JNML_HOME=/home/travis/jnml/jNeuroMLJar
     - export PATH=$PATH:$JNML_HOME
     - if [[ ${OMV_ENGINE} == "jNeuroML" ]]; then ./regenerate.sh ; fi
-    
-    
-    # Set NEST variables
-    - if [[ ${OMV_ENGINE} == *"NEST"* ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh ; fi
     
     - omv list-engines -V
     - env
