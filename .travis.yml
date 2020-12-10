@@ -11,7 +11,7 @@ addons:
     - python-matplotlib 
     - python-sympy
     - python-tables 
-    - python-dev
+    - python-all-dev
     - libreadline6-dev 
     - libncurses5-dev 
     - libgsl0-dev
@@ -41,8 +41,6 @@ install:
 script:
     - omv list-engines -V
     
-    # Set NEST variables
-    - if [[ ${OMV_ENGINE} == *"NEST"* ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh ; fi
     
     - omv list-engines -V
     
@@ -51,6 +49,9 @@ script:
     - export JNML_HOME=/home/travis/jnml/jNeuroMLJar
     - export PATH=$PATH:$JNML_HOME
     - if [[ ${OMV_ENGINE} == "jNeuroML" ]]; then ./regenerate.sh ; fi
+    
+    # Set NEST variables
+    - if [[ ${OMV_ENGINE} == *"NEST"* ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh ; fi
     
     - omv list-engines -V
     - env
