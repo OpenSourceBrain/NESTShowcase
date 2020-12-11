@@ -10,13 +10,18 @@ addons:
     - python-scipy 
     - python-matplotlib 
     - python-sympy
+    - python-nose
     - python-tables 
     - python-all-dev
-    - libreadline6-dev 
-    - libncurses5-dev 
+    - libreadline-dev 
+    - libncurses-dev 
     - libboost-python-dev
-    - libgsl0-dev
+    - libltdl-dev
+    - libgsl-dev
     - cython
+    - openmpi-bin 
+    - libopenmpi-dev
+   
 
 
 language: python
@@ -49,7 +54,7 @@ script:
     - if [[ ${OMV_ENGINE} == "jNeuroML" ]]; then ./regenerate.sh ; fi
     
     # Set NEST variables
-    - if [[ ${OMV_ENGINE} == *"NEST"* ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh ; fi
+    - if [[ ${OMV_ENGINE} == *"NEST"* ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh; which nest ; fi
     
     - omv list-engines -V
     - env
