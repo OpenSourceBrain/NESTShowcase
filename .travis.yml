@@ -1,7 +1,6 @@
 # Framework for running automated tests on OSB using Travis-CI, see https://github.com/OpenSourceBrain/osb-model-validation
 
-dist: xenial
-sudo: false
+dist: bionic
 
 addons:
   apt:
@@ -11,48 +10,52 @@ addons:
     - python-scipy 
     - python-matplotlib 
     - python-sympy
+    - python-nose
     - python-tables 
-    - python-tk
-    - python-tornado
-    - libreadline6-dev 
-    - libncurses5-dev 
-    - libgsl0-dev
+    - python-dev
+    - python3-dev
+    - libreadline-dev 
+    - libncurses-dev 
+    - libboost-python-dev
+    - libltdl-dev
+    - libgsl-dev
     - cython
+    - openmpi-bin 
+    - libopenmpi-dev
+   
 
 
 language: python
 
 python: 
   - "2.7"
-  # - "3.6"  see below
-  #- "3.7"
+  - "3.6" 
   
-# remove this for py3..?
-virtualenv:
-    system_site_packages: true
-
 
 env:
     - OMV_ENGINE=jNeuroML
-    - OMV_ENGINE=jNeuroML_validate
-    - OMV_ENGINE=jLEMS
-    - OMV_ENGINE=PyNEST:2.14.0
-    - OMV_ENGINE=PyNEST:2.16.0
-    - OMV_ENGINE=PyNEST:2.18.0
-    - OMV_ENGINE=PyNEST:2.20.0
+    - OMV_ENGINE=PyNEST
+    - OMV_ENGINE=NEST
 
 install: 
+    
+    - pip install scipy matplotlib # Why is this needed? Doesn't seem to get installed correctly with addons above...
+    
+    # Install OMV
+
     - pip install git+https://github.com/OpenSourceBrain/osb-model-validation
 
 script:
+    - omv list-engines -V
+    
     - omv all -V
+    
     - export JNML_HOME=/home/travis/jnml/jNeuroMLJar
     - export PATH=$PATH:$JNML_HOME
     - if [[ ${OMV_ENGINE} == "jNeuroML" ]]; then ./regenerate.sh ; fi
     
-    
     # Set NEST variables
-    - if [[ ${OMV_ENGINE} == "PyNEST" ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh ; fi
+    - if [[ ${OMV_ENGINE} == *"NEST"* ]]; then source $TRAVIS_HOME/nest/nest/bin/nest_vars.sh; which nest ; fi
     
     - omv list-engines -V
     - env
