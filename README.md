@@ -1,6 +1,6 @@
 ## NEST Showcase
 
-Mapping NeuroML2/LEMS to NEST. 
+Mapping NeuroML2/LEMS to [NEST](https://www.nest-initiative.org/). 
 
 Initial work involves investigating NESTML mapping from/to NeuroML2/LEMS.
 
