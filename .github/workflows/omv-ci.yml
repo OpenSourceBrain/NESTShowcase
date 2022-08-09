@@ -41,7 +41,7 @@ jobs:
 
     - name: Directly run NEST if any NEST-like engine
       run: |
-        if [[  ${{ matrix.engine }} == *"NEST"* ]]; then cd NEST/test/; nest test_nest.sli ; fi
+        if [[  ${{ matrix.engine }} == *"NEST"* ]]; then cd NEST/test/; /home/runner/nest/nest/bin/nest test_nest.sli ; fi
 
     - name: OMV final version info
       run: |
