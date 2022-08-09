@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ 3.7, 3.9 ]
+        python-version: [ 3.9 ]
         engine: [ jLEMS, jNeuroML, jNeuroML_validate, PyNEST, NEST, "NEST:2.16.0", "NEST:2.18.0", "NEST:3.0", "NEST:3.1" ]
         exclude:
           - python-version: 3.7
@@ -24,21 +24,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Set up Python  ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version:  ${{ matrix.python-version }}
-        
+
     - name: Install OMV
       run: |
         pip install git+https://github.com/OpenSourceBrain/osb-model-validation
         pip install scipy sympy matplotlib cython pandas tables
-        
+
     - name: Run OMV tests on engine ${{ matrix.engine }}
       run: |
         omv all -V --engine=${{ matrix.engine }}
-        
+
+    - name: Directly run NEST if any NEST-like engine
+      run: |
+        if [[  ${{ matrix.engine }} == *"NEST"* ]]; then cd NEST/test/; nest test_nest.sli ; fi
+
     - name: OMV final version info
       run: |
         omv list -V # list installed engines
