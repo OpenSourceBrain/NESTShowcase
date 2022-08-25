@@ -12,13 +12,12 @@ nest.SetStatus(neuron, {'E_rev':[0.0, 0.0, 0.0, -85.0],
 spike = nest.Create('spike_generator', params = {'spike_times':
                                                 np.array([10.0])})
 
-voltmeter = nest.Create('voltmeter', 1, {'withgid': True})
+voltmeter = nest.Create('voltmeter', 1)
 
 delays=[1.0, 300.0, 500.0, 700.0]
 w=[1.0, 1.0, 1.0, 1.0]
 for syn in range(4):
-    nest.Connect(spike, neuron, syn_spec={'model': 'static_synapse',
-                                          'receptor_type': 1 + syn,
+    nest.Connect(spike, neuron, syn_spec={'receptor_type': 1 + syn,
                                           'weight': w[syn],
                                           'delay': delays[syn]})
 
@@ -29,11 +28,16 @@ dmm = nest.GetStatus(voltmeter)[0]
 Vms = dmm["events"]["V_m"]
 ts = dmm["events"]["times"]
 
+f = open('V_m.dat','w')
+for ti in range(len(ts)):
+    f.write('%s\t%s\n'%(ts[ti]/1000.,Vms[ti]/1000.))
+f.close()
+
 import pylab
 import sys
-if not '-nogui' in sys.argv: 
+if not '-nogui' in sys.argv:
     pylab.figure(2)
     pylab.plot(ts, Vms)
     pylab.show()
-    
+
 print('Finished simulation')

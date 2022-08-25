@@ -1,2 +1,15 @@
-target: test_pynest.py 
+target: test_pynest.py
 engine: PyNEST
+mep: .test.mep
+experiments:
+  v0:
+    observables:
+      spike times:
+        file:
+          path: V_m.dat
+          columns: [0,1]
+          scaling: [1000, 1000]
+        spike detection:
+          method: threshold
+          threshold: -70
+        tolerance: 0
