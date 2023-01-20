@@ -29,7 +29,7 @@ jobs:
            - "NEST:3.1"
            - "NEST:3.2"
            - "NEST:3.3"
- 
+
 
     steps:
     - uses: actions/checkout@v2
@@ -41,7 +41,7 @@ jobs:
 
     - name: Install OMV
       run: |
-        pip install git+https://github.com/OpenSourceBrain/osb-model-validation@test_nest
+        pip install git+https://github.com/OpenSourceBrain/osb-model-validation@test_pynn0101 
         pip install scipy sympy matplotlib cython pandas tables
 
     - name: Run OMV tests on engine ${{ matrix.engine }}
