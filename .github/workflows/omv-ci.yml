@@ -20,8 +20,8 @@ jobs:
            - jNeuroML
            - jNeuroML_validate
            - PyNEST
-           #- "PyNEST:2.20.0"  # issue with changing version of pynest...
-           #- "PyNEST:3.2"     # issue with changing version of pynest...
+           - "PyNEST:2.20.0"  # issue with changing version of pynest...
+           - "PyNEST:3.2"     # issue with changing version of pynest...
            - NEST
            - "NEST:2.16.0"
            - "NEST:2.18.0"
@@ -41,7 +41,7 @@ jobs:
 
     - name: Install OMV
       run: |
-        pip install git+https://github.com/OpenSourceBrain/osb-model-validation 
+        pip install git+https://github.com/OpenSourceBrain/osb-model-validation # @test_nest
         pip install scipy sympy matplotlib cython pandas tables
 
     - name: Run OMV tests on engine ${{ matrix.engine }}
