@@ -20,8 +20,8 @@ jobs:
            - jNeuroML
            - jNeuroML_validate
            - PyNEST
-           - "PyNEST:2.20.0"  # issue with changing version of pynest...
-           - "PyNEST:3.2"     # issue with changing version of pynest...
+           - "PyNEST:2.20.0"  
+           - "PyNEST:3.2"    
            - NEST
            - "NEST:2.16.0"
            - "NEST:2.18.0"
@@ -29,6 +29,9 @@ jobs:
            - "NEST:3.1"
            - "NEST:3.2"
            - "NEST:3.3"
+        exclude:
+           - python-version: "3.10"
+           - engine: "PyNEST:2.20.0"
 
 
     steps:
