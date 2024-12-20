@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.11"]
         engine: 
            - jLEMS
            - jNeuroML
@@ -24,16 +24,18 @@ jobs:
            - "PyNEST:3.2"    
            - "PyNEST:3.3"  
            - "PyNEST:3.4"    
+           - "PyNEST:3.6"    
+           - "PyNEST:3.8"    
            - NEST
            - "NEST:2.16.0"
            - "NEST:2.18.0"
            - "NEST:3.0"
            - "NEST:3.1"
-           - "NEST:3.2"
-           - "NEST:3.3"
            - "NEST:3.4"
            - "NEST:3.5"
            - "NEST:3.6"
+           - "NEST:3.7"
+           - "NEST:3.8"
         exclude:
            - python-version: "3.10"
            - engine: "PyNEST:2.20.0"
