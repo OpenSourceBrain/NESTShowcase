@@ -53,7 +53,7 @@ jobs:
       run: |
         pip install git+https://github.com/OpenSourceBrain/osb-model-validation # @test_nest
         pip install scipy sympy matplotlib cython pandas tables
-        sudo apt-get install libgsl0ldbl # install GSL for ubuntu 24.04
+        sudo apt-get install libgsl27 libgslcblas0 # install GSL for ubuntu 24.04
 
     - name: Run OMV tests on engine ${{ matrix.engine }}
       run: |
